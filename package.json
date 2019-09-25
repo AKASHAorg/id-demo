@@ -1,0 +1,11 @@
+{
+    "name": "akasha-id-demo",
+    "version": "1.0.0",
+    "description": "Demo app for AKASHA.id",
+    "main": "index.js",
+    "module": "src/index.js",
+    "scripts": {
+        "hub": "node ./node_modules/signalhub/bin.js -p 8888 listen &>/dev/null"        
+    },
+    "author": "Andrei Sambra <andrei.sambra@akasha.world> (https://akasha.org/)"
+}
