@@ -14,7 +14,7 @@ const appInfo = {
   name: 'Profile viewer',
   description: 'Demo app for AKASHA.id',
   icon: window.location.origin + '/logo.png',
-  url: 'http://127.0.0.1:3001/'
+  url: 'http://localhost:3001/'
 }
 const Client = new window.AKASHAidClient(appInfo, config)
 
