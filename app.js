@@ -1,3 +1,5 @@
+let regWindow
+let Client
 
 const localProfile = {
   name: "foo",
@@ -16,7 +18,8 @@ const appInfo = {
   icon: window.location.origin + '/logo.png',
   url: 'http://localhost:3001/'
 }
-const Client = new window.AKASHAidClient(appInfo, config)
+
+const ATTRIBUTES = ['givenName', 'email', 'picture']
 
 const hide = (id) => {
     document.getElementById(id).hidden = true
@@ -40,43 +43,63 @@ const showProfile = (profile) => {
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
-          <div class="profile-card__name">${profile.givenName}</div>
-          <div class="profile-card__txt">${profile.email}</div>
-
-
+          <div class="profile-card__name">${profile.givenName || ''}</div>
+          <div class="profile-card__txt">${profile.email || ''}</div>
           <div class="profile-card-social">
-              
+            <button id="refresh" class="profile-card__button button--blue js-message-btn">Refresh profile</button>
+            <button id="logout" class="profile-card__button button--gray js-message-btn">Remove profile</button>
           </div>
-
       </div>
 
   </div>`
   document.getElementById('profile-wrapper').innerHTML = div
+  // refresh button logic
+  document.getElementById('refresh').addEventListener('click', async () => {
+    const claim = JSON.parse(localStorage.getItem('claim'))
+    const response = await Client.refreshProfile(claim)
+    handleClaim(response)
+  }, true)
+  // logout button logic
+  document.getElementById('logout').addEventListener('click', async () => {
+    localStorage.removeItem('profile')
+    document.getElementById('profile-wrapper').innerHTML = ''
+    document.getElementById('nonce').innerHTML = ''
+    hide('nonce')
+    show('request')
+  }, true)
 }
 
+const handleClaim = async (response) => {
+  if (response.allowed) {
+    const profile = {}
+    const attrs = response.claim.credentialSubject
+    ATTRIBUTES.forEach(attr => {
+      if (attrs[attr]) {
+        profile[attr] = attrs[attr]
+      }
+    })
+    // add attributes
+    showProfile(profile)
+    regWindow.close()
+
+    // save profile
+    localStorage.setItem('claim', JSON.stringify(response))
+    localStorage.setItem('profile', JSON.stringify(profile))
+  }
+}
 
 const register = async () => {
   const link = await Client.registrationLink()
   console.log(link)
   // The token and the refreshEncKey values are taked from the previous response (above)
-  const attributes = ['givenName', 'email', 'picture']
-  Client.requestProfile(attributes).then(response => {
+  Client.requestProfile(ATTRIBUTES).then(response => {
     console.log(response)
-    if (response.allowed) {
-      const profile = {}
-      const attrs = response.claim.credentialSubject
-      attributes.forEach(attr => {
-        profile[attr] = attrs[attr]
-      })
-      // add attributes
-      showProfile(profile)
-    }
+    handleClaim(response)
   })
   return link
 }
 
 document.getElementById('request').addEventListener('click', async () => {
-  // showProfile()
   const link = await register()
 
   showNonce()
@@ -86,9 +109,20 @@ document.getElementById('request').addEventListener('click', async () => {
           
   let left = window.screen.width - 400;
   left = left > 0 ? left/2 : 0;
-
+ 
   const idWindow = window.open(link, "Request profile","width=800,height=600" + ",top=" + top + ",left=" + left)
   idWindow.moveTo(left, top)
   idWindow.focus()
+  regWindow = idWindow
 }, true)
 
+
+const init = () => {
+  const profile = JSON.parse(localStorage.getItem('profile'))
+  if (profile) {
+    showProfile(profile)
+  }
+  Client = new window.AKASHAidClient(appInfo, config)
+}
+
+init()
