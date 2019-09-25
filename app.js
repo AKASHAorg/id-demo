@@ -40,7 +40,7 @@ const showProfile = (profile) => {
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
-          <div class="profile-card__name">${profile.name}</div>
+          <div class="profile-card__name">${profile.givenName}</div>
           <div class="profile-card__txt">${profile.email}</div>
 
 

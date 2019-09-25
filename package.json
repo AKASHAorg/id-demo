@@ -5,11 +5,14 @@
     "main": "index.js",
     "module": "src/index.js",
     "scripts": {
-        "hub": "node ./node_modules/signalhub/bin.js -p 8888 listen &>/dev/null",
+        "hub": "node ./node_modules/signalhub/bin.js -p 8888 listen",
         "start": "http-server -p 3001 ."
     },
     "author": "Andrei Sambra <andrei.sambra@akasha.world> (https://akasha.org/)",
     "devDependencies": {
         "http-server": "^0.11.1"
+    },
+    "dependencies": {
+        "signalhub": "^4.9.0"
     }
 }
