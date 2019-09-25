@@ -1,5 +1,5 @@
 
-const testProfile = {
+const localProfile = {
   name: "foo",
   email: "foo@bar.com",
   picture: "https://miro.medium.com/max/3150/0*O9lgVRoJYFe8e_a3.jpg"
