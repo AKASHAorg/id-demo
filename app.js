@@ -1,6 +1,8 @@
 let regWindow
 let Client
 
+const AKASHAid = 'http://localhost:3000/'
+
 const localProfile = {
   name: "foo",
   email: "foo@bar.com",
@@ -44,7 +46,10 @@ const showProfile = (profile) => {
 
       <div class="profile-card__cnt js-profile-cnt">
           <div class="profile-card__name">${profile.givenName || ''}</div>
-          <div class="profile-card__txt">${profile.email || ''}</div>
+          <div class="profile-card__txt">
+            ${profile.email || ''}
+            <p><a href="${AKASHAid}" target="_new">AKASHA.id app</a></p>
+          </div>
           <div class="profile-card-social">
             <button id="refresh" class="profile-card__button button--blue js-message-btn">Refresh profile</button>
             <button id="logout" class="profile-card__button button--gray js-message-btn">Remove profile</button>
